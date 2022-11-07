@@ -31,4 +31,7 @@ se <-
                        rowData = d[, c(1, 2)],
                        colData = info)
 
+## Filter genes with mean count less than 1
+zeros <- rowMeans(assay(se)) < 1
+se <- se[!zeros, ]
 saveRDS(se, "data/processed_data/se.rds")
