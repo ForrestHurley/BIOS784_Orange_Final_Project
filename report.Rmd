@@ -6,7 +6,47 @@ output: html_document
 ## Background
 
 
+Lung cancer is one of the most commonly diagnosed cancers and the leading cause of cancer death. For many years, the main treatments for lung cancer include surgery, chemotherapy, radiotherapy and targeted therapy. Non-small-cell lung cancer (NSCLC) is the leading cause of cancer-related mortality and accounts for ~85$\%$ of lung cancers. NSCLC tumors typically harbor extensive genomic alterations, with high mutation load linking to better response to checkpoint blockade although with exceptions. 
+
+The paper \cite{1} studied the complexity of tumor-infiltrating T cells in NSCLC, and performed deep single-cell RNA sequencing on T cells isolated from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell, enabling reliable detection of lowly expressed cytokines and transcription factors.
+
+    
+![Data collection](Figurlab.PNG)
+
+## PCA VS t-SNE in dimensional reduction analysis
+
+The number of input variables or features for a dataset is referred to as its dimensionality. Dimensionality reduction refers to techniques that reduce the number of input variables in a dataset. More input features often make a predictive modeling task more challenging to model, more generally referred to as the curse of dimensionality. In biology statistics, high-dimensionality statistics and dimensionality reduction techniques are often used for data visualization. Nevertheless these techniques can be used in applied machine learning to simplify a classification or regression dataset in order to better fit a predictive model. Dimensionality reduction is a data preparation technique performed on data prior to modeling. It might be performed after data cleaning and data scaling and before training a predictive model.
+
+
+### Principal Component analysis (PCA): 
+PCA is an unsupervised linear dimensionality reduction and one of most important data visualization technique for high dimensional data. The main idea behind this technique is to reduce the dimensionality of data that is highly correlated by transforming the original set of vectors to a new set which is known as Principal component. PCA is a technique that converts n-dimensions of data into k-dimensions while maintaining as much information from the original dataset. 
+
+### t-distributed stochastic neighbourhood embedding (t-SNE): 
+t-distributed stochastic neighbor embedding (t-SNE) is a statistical method for visualizing high-dimensional data by giving each datapoint a location in a two or three-dimensional map. It is based on Stochastic Neighbor Embedding originally developed by Sam Roweis and Geoffrey Hinton,[1] where Laurens van der Maaten proposed the t-distributed variant.[2] It is a nonlinear dimensionality reduction technique well-suited for embedding high-dimensional data for visualization in a low-dimensional space of two or three dimensions. Specifically, it models each high-dimensional object by a two- or three-dimensional point in such a way that similar objects are modeled by nearby points and dissimilar objects are modeled by distant points with high probability.
+
+The t-SNE algorithm comprises two main stages. First, t-SNE constructs a probability distribution over pairs of high-dimensional objects in such a way that similar objects are assigned a higher probability while dissimilar points are assigned a lower probability. Second, t-SNE defines a similar probability distribution over the points in the low-dimensional map, and it minimizes the Kullback–Leibler divergence (KL divergence) between the two distributions with respect to the locations of the points in the map. While the original algorithm uses the Euclidean distance between objects as the base of its similarity metric, this can be changed as appropriate.
+
+Given a set of ${\displaystyle N}$ high-dimensional objects ${\displaystyle \mathbf {x} _{1},\dots ,\mathbf {x} _{N}}$,t-SNE first computes probabilities ${\displaystyle p_{ij}}$ that are proportional to the similarity of objects $\mathbf {x} _{i}$ and $\mathbf {x} _{j}$, as follows. 
+\begin{align}
+    p_{i|j} &= \frac{ exp (-\lVert x_i - x_j \rVert^2/2\sigma_i^2)}{\sum_{k \neq i} exp (-\lVert x_i - x_k \rVert^2/2\sigma_i^2)}\\
+    p_{i|i} &= 0
+    \label{}
+\end{align}
+Let define $p_{ij} = \frac{p_{i|j} + p_{j|i}}{2N}$, and note that $p_{ij} = p_{ji}, \sum p_{ij} = 1$. The locations of the points $\mathbf {x} _{i}$ in the map are determined by minimizing the (non-symmetric) Kullback–Leibler divergence of the distribution P from the distribution Q, that is:
+\begin{align}
+    KL (P \rVert Q) &= \sum_{i \neq j} p_{ij} log \frac{p_{ij}}{q_{ij}}
+    \label{}
+\end{align}
+The minimization of the Kullback–Leibler divergence with respect to the points $\mathbf {y} _{i}$ is performed using gradient descent. The result of this optimization is a map that reflects the similarities between the high-dimensional inputs.
+
+
+There is no best technique for dimensionality reduction and no mapping of techniques to problems. Instead, the best approach is to use systematic controlled experiments to discover what dimensionality reduction techniques, when paired with your model of choice, result in the best performance on your dataset. Typically, linear algebra and manifold learning methods assume that all input features have the same scale or distribution. This suggests that it is good practice to either normalize or standardize data prior to using these methods if the input variables have differing scales or units. In the paper, dimensional reduction analysis (t-SNE) was applied to the expression data revealed that T cells clustered primarily based on their tissue origins and subtypes. 
+
+![T cells clusters](Figures/T cells.png)
+The t-SNE projection of 9,055 single T cells from 14 patients, showing the formation of 16 main clusters, including 7 for CD8+ T cells, 7 for conventional CD4+ T cells (Tconvs; C1, C2, C3, C4, C5, C6 and C7 of CD4 clusters) and 2 for regulatory T cells (Tregs; C8 and C9 of CD4 clusters). Each dot corresponds to one single cell, colored according to cell cluster. c, z-score normalized mean expression of selected T cell function-associated genes in each cell cluster. Black boxes highlight the prominent patterns defining known T cell subtypes.
+
 ## Hypothesis
+
 
 
 
