@@ -1,5 +1,6 @@
 ---
 title: "Model Based Clustering of Lung Carcinoma Single T-Cells"
+author: "Peyton Kuhlers, Forrest Eli Hurley, Mingwei Fei, and Xinxin Chen"
 output: html_document
 bibliography: refs.bib
 link-citations: true
