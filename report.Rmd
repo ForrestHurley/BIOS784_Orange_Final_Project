@@ -11,7 +11,7 @@ Lung cancer is one of the most commonly diagnosed cancers and the leading cause 
 The paper \cite{1} studied the complexity of tumor-infiltrating T cells in NSCLC, and performed deep single-cell RNA sequencing on T cells isolated from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell, enabling reliable detection of lowly expressed cytokines and transcription factors.
 
     
-![Data collection](Figures/lab.png)
+![Data collection](Figures/lab.PNG)
 
 ## PCA VS t-SNE in dimensional reduction analysis
 
@@ -42,7 +42,7 @@ The minimization of the Kullback–Leibler divergence with respect to the points
 
 There is no best technique for dimensionality reduction. Instead, the best approach is to use systematic controlled experiments to discover what dimensionality reduction techniques, when paired with the model of choice, result in the best performance on the dataset. Typically, linear algebra and manifold learning methods assume that all input features have the same scale or distribution. This suggests that it is good practice to either normalize or standardize data prior to using these methods if the input variables have differing scales or units. In the paper, dimensional reduction analysis (t-SNE) was applied to the expression data revealed that T cells clustered primarily based on their tissue origins and subtypes. 
 
-![T cells clusters](Figures/T cells.png)
+![T cells clusters](Figures/T cells.PNG)
 The t-SNE projection of 9,055 single T cells from 14 patients, showing the formation of 16 main clusters, including 7 for CD8+ T cells, 7 for conventional CD4+ T cells (Tconvs; C1, C2, C3, C4, C5, C6 and C7 of CD4 clusters) and 2 for regulatory T cells (Tregs; C8 and C9 of CD4 clusters). Each dot corresponds to one single cell, colored according to cell cluster. c, z-score normalized mean expression of selected T cell function-associated genes in each cell cluster. Black boxes highlight the prominent patterns defining known T cell subtypes.
 
 ## Hypothesis
