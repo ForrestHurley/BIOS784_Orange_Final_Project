@@ -7,50 +7,43 @@ link-citations: true
 
 ## Background
 
+[@Guo2018] studied the complexity of tumor-infiltrating T cells in NSCLC, and performed single-cell RNA-seq on T cells derived from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell.
+The aim of [@Guo2018] was to broadly characterize the "T cell landscape" of patients with lung cancer.
+The data collection process is shown graphically below.
 
-Lung cancer is one of the most commonly diagnosed cancers and the leading cause of cancer death. For many years, the main treatments for lung cancer include surgery, chemotherapy, radiotherapy and targeted therapy. Non-small-cell lung cancer (NSCLC) is the leading cause of cancer-related mortality and accounts for ~85$\%$ of lung cancers. NSCLC tumors typically harbor extensive genomic alterations, with high mutation load linking to better response to checkpoint blockade although with exceptions. 
+![Figure adapted from [@Guo2018]](Figures/lab.PNG)
 
-The paper [-@Guo2018] studied the complexity of tumor-infiltrating T cells in NSCLC, and performed deep single-cell RNA sequencing on T cells isolated from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell, enabling reliable detection of lowly expressed cytokines and transcription factors.
+[@Guo2018] employed the following strategy for analyzing the sequenced T-cells:
+First, cells with greater than 10% mitochondrial gene expression or TPM less than 10
+for CD3D, CD3E, and CD3G were removed. Next, genes with mean count less than 1
+were filtered. After filtering, 'sum factors' were computed and the data was log2
+transformed. The normalized expression matrix was then mean centered *within patient*.
+For clustering, the authors filtered the expression matrix to the top 1500
+highest variance genes and performed PCA of with the first 30 principal components
+were used for t-SNE. The authors then use the 2D embedding to create clusters.
+They then used the 1000 most significantly differentially expressed genes
+between the clusters identified by ANOVA as input into t-SNE and cluster calling
+a second time. These clusters and representative genes are shown in the figure below.
 
-    
-![Data collection](Figures/lab.PNG)
-
-## PCA VS t-SNE in dimensional reduction analysis
-
-The number of input variables or features for a dataset is referred to as its dimensionality. Dimensionality reduction refers to techniques that reduce the number of input variables in a dataset. More input features often make a predictive modeling task more challenging to model, more generally referred to as the curse of dimensionality. In biology statistics, high-dimensionality statistics and dimensionality reduction techniques are often used for data visualization. Nevertheless these techniques can be used in applied machine learning to simplify a classification or regression dataset in order to better fit a predictive model. Dimensionality reduction is a data preparation technique performed on data prior to modeling. It might be performed after data cleaning and data scaling and before training a predictive model.
-
-
-### Principal Component analysis (PCA): 
-PCA is an unsupervised linear dimensionality reduction and one of most important data visualization technique for high dimensional data. The main idea behind this technique is to reduce the dimensionality of data that is highly correlated by transforming the original set of vectors to a new set.It is also known as matrix factorization methods, which reduce a dataset matrix into its constituent parts. Examples include the eigendecomposition and singular value decomposition. The parts can be ranked and subsets of the parts can be selected that best capture the salient structure and can be used to represent the dataset.   
-
-### t-distributed stochastic neighbourhood embedding (t-SNE): 
-t-distributed stochastic neighbor embedding (t-SNE) is a statistical method for visualizing high-dimensional data by giving each datapoint a location in a two or three-dimensional map. It is based on Stochastic Neighbor Embedding originally developed by Sam Roweis and Geoffrey Hinton,[1] where Laurens van der Maaten proposed the t-distributed variant.[2] It is a nonlinear dimensionality reduction technique well-suited for embedding high-dimensional data for visualization in a low-dimensional space of two or three dimensions. Specifically, it models each high-dimensional object by a two- or three-dimensional point in such a way that similar objects are modeled by nearby points and dissimilar objects are modeled by distant points with high probability.
-
-The t-SNE algorithm comprises two main stages. First, t-SNE constructs a probability distribution over pairs of high-dimensional objects in such a way that similar objects are assigned a higher probability while dissimilar points are assigned a lower probability. Second, t-SNE defines a similar probability distribution over the points in the low-dimensional map, and it minimizes the Kullback–Leibler divergence (KL divergence) between the two distributions with respect to the locations of the points in the map. While the original algorithm uses the Euclidean distance between objects as the base of its similarity metric, this can be changed as appropriate.
-
-Given a set of ${\displaystyle N}$ high-dimensional objects ${\displaystyle \mathbf {x} _{1},\dots ,\mathbf {x} _{N}}$,t-SNE first computes probabilities ${\displaystyle p_{ij}}$ that are proportional to the similarity of objects $\mathbf {x} _{i}$ and $\mathbf {x} _{j}$, as follows. 
-\begin{align}
-    p_{i|j} &= \frac{ exp (-\lVert x_i - x_j \rVert^2/2\sigma_i^2)}{\sum_{k \neq i} exp (-\lVert x_i - x_k \rVert^2/2\sigma_i^2)}\\
-    p_{i|i} &= 0
-    \label{}
-\end{align}
-Let define $p_{ij} = \frac{p_{i|j} + p_{j|i}}{2N}$, and note that $p_{ij} = p_{ji}, \sum p_{ij} = 1$. The locations of the points $\mathbf {x} _{i}$ in the map are determined by minimizing the (non-symmetric) Kullback–Leibler divergence of the distribution P from the distribution Q, that is:
-\begin{align}
-    KL (P \rVert Q) &= \sum_{i \neq j} p_{ij} log \frac{p_{ij}}{q_{ij}}
-    \label{}
-\end{align}
-The minimization of the Kullback–Leibler divergence with respect to the points $\mathbf {y} _{i}$ is performed using gradient descent. The result of this optimization is a map that reflects the similarities between the high-dimensional inputs.
-
-
-There is no best technique for dimensionality reduction. Instead, the best approach is to use systematic controlled experiments to discover what dimensionality reduction techniques, when paired with the model of choice, result in the best performance on the dataset. Typically, linear algebra and manifold learning methods assume that all input features have the same scale or distribution. This suggests that it is good practice to either normalize or standardize data prior to using these methods if the input variables have differing scales or units. In the paper, dimensional reduction analysis (t-SNE) was applied to the expression data revealed that T cells clustered primarily based on their tissue origins and subtypes. 
-
-![T cells clusters](Figures/T cells.PNG)
-The t-SNE projection of 9,055 single T cells from 14 patients, showing the formation of 16 main clusters, including 7 for CD8+ T cells, 7 for conventional CD4+ T cells (Tconvs; C1, C2, C3, C4, C5, C6 and C7 of CD4 clusters) and 2 for regulatory T cells (Tregs; C8 and C9 of CD4 clusters). Each dot corresponds to one single cell, colored according to cell cluster. c, z-score normalized mean expression of selected T cell function-associated genes in each cell cluster. Black boxes highlight the prominent patterns defining known T cell subtypes.
+![Figure adapted from [@Guo2018]](Figures/T cells.PNG)
 
 ## Hypothesis
 
+It has been previously written that the t-SNE embedding can distort true relationships
+or identify relationships where none exist, especially after transformation[@Chari2021],[@Townes2019].
+Given this fact, and the multiplicity of testing performed by the authors, it is
+unlikely that the proposed clusters represent true biological phenomenon.
+We hypothesized that it is much more likely that the true clustering is related
+to one of the following known biological factors:
 
+1) Tissue source, since T-cells were extracted from the tumor, adjacent normal,
+and peripheral blood.
 
+2) Patient, since one would expect heterogeneity in expression amongst the 14
+patients
+
+3) The FACS sorted T-cell labels, since these correspond to known subtypes
+of T-cells.
 
 ## PCA
 
@@ -222,8 +215,120 @@ knitr::include_graphics("Figures/glmpca_poi_majorcluster.png")
 
 ## Gaussian Mixture Modeling
 
+As an alternative to t-SNE, we fit Gaussian mixture models (GMM) using `mclust/v6.0.0` [@mclust6].
+Similar to [@Guo2018], we used the first 30 PCs of the log2 tranformed expression,
+however, we included all genes with mean count greater than 1, instead of the most
+variable 1500. The choice of 30 PCs was out of convenience, since attempting to fit a
+GMM for a ~12000 X 12000 matrix was infeasible. However, for the purpose of
+examining how results change given clustering strategy, this is sufficient.
+
+```{r, eval=F}
+library(irlba)
+library(mclust)
+library(SummarizedExperiment)
+library(tidyverse)
+se <- readRDS("data/processed_data/se.rds")
+express <- log2(t(assay(se)) + 1)
+pc_express <- prcomp_irlba(express, n = 30, scale = T)
+
+## 4 models
+## G = 3, each tissue site
+## G = 14 patients
+## G = 12 Cell types
+## G = 16 Publication
+gmm <- Mclust(pc_express$x, G = c(3,12,14,16))
+```
+
+To evaluate the fit of each GMM, we use Bayesian Information Criterion (BIC) as a simple
+metric for choosing the best model. From the left figure below, we see the BIC
+peaks at 14 components.
+
+```{r, eval=F}
+gmm_bic <- gmm$BIC[,"VEV"] %>% as.data.frame()
+colnames(gmm_bic) <- c("BIC")
+
+## BIC plot of 4 model fits
+gmm_bic %>% rownames_to_column("Components") %>%
+  ggplot(aes(x = as.numeric(Components), y = BIC)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Components") +
+  theme_bw()
+se$PC1 <- pc_express$x[,1]
+se$PC2 <- pc_express$x[,2]
+
+## Right plot, GMM clusters
+ggplot(as.data.frame(colData(se)), aes(x = PC1, y = PC2, color = as.factor(gmm_cluster))) +
+  geom_point(alpha = 0.5) +
+  stat_ellipse() +
+  scale_color_discrete(name = "GMM Cluster") +
+  theme_bw()
+```
+
+```{r, fig.show="hold", out.width="50%", echo=F}
+knitr::include_graphics("Figures/gmm_bic.png")
+knitr::include_graphics("Figures/gmm_log2_30pc.png")
+```
+
+In the two plots below, we overlay the known patient and sample type (T-cell type)
+with the GMM clusters. While there is no distinct separation, the clusters
+in the lower half of the plot appear to be tumor derived T-cells (TTC, TTH, TTR, TTY), while the clusters
+in the top half appear to be more related to peripheral blood derived T-cells (PTC, PTH, PTR, PTY).
+The normal derived T-cells appear to be randomly distributed throughout the clusters (NTC, NTH, NTR, NTY).
+
+```{r, eval=F}
+## Right, GMM clusters colored by T-cell tissue source
+ggplot(as.data.frame(colData(se)), aes(x = PC1, y = PC2)) +
+  geom_point(alpha = 0.5, aes(color = sampleType)) +
+  stat_ellipse(aes(group = as.factor(gmm_cluster))) +
+  scale_color_discrete(name = "Sample Type") +
+  theme_bw()
+
+## Left, GMM clusters colored by Patient 
+ggplot(as.data.frame(colData(se)), aes(x = PC1, y = PC2)) +
+  geom_point(alpha = 0.5, aes(color = Patient)) +
+  stat_ellipse(aes(group = as.factor(gmm_cluster))) +
+  scale_color_discrete(name = "Patient") +
+  theme_bw()
+```
+
+```{r, fig.show="hold", out.width="50%", echo=F}
+knitr::include_graphics("Figures/gmm_patient.png")
+knitr::include_graphics("Figures/gmm_sampletype.png")
+```
 
 ## Conclusions
 
+In this analysis, we used three different strategies for exploring single cell
+RNAseq from T-cells derived from 14 lung cancer patients. The goal of exploring
+the data in this way was to determine if using techniques that, at least in principle,
+are more interpretable than i.e. t-SNE we could learn something about underlying
+T-cell biology. Interestingly, despite using very similar filtering and transformations
+to the expression data, we did not observe the same amount of cluster separation
+that the original authors saw. Even GLM-PCA, which should in theory be a better
+fit for the data, did not convincingly produce any structure in the 2D embedding.
+Our GMM results show the data could be consistent with any where from 12-16 clusters,
+with a high degree of overlap between them. Given these results, there seems
+to be more homogeneity of the T-cells than [@Guo2018] suggests.
+This could also suggest that a discrete clustering based approach is not appropriate
+for this data and some continuous measure of T-cell state would better describe
+the data.
+
 ## References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
