@@ -41,6 +41,29 @@ summary(pca)
 ## Cumulative Proportion  0.07842 0.07893
 ```
 
+The next plot shows the proportion and cumulative proportion of variance 
+for the first 1000 PCs.
+
+```{r eval=FALSE}
+pca_var = as.data.frame(pca$sdev)
+colnames(pca_var) <- c("sdev")
+
+ggplot(aes(x=1:length(sdev),y=sdev^2/pca$totalvar),data=pca_var) + 
+	geom_line(color="red") + 
+	geom_line(aes(y=cumsum(sdev^2)/pca$totalvar),color="blue") +
+	labs(x="PC",y="Proportion of Variance") +
+	scale_x_continuous(breaks=c(0,100,200,300,400,500,600,700,800,900,1000))
+```
+
+![](Figures/ProportionOfVariance.png)
+
+After the first 30 or so PCs, the slope of the cumulative proportion of variance 
+becomes nearly constant. This means that the principal components have nearly the 
+same variances and correspond to nearly the same eigenvalues. Therefore they are 
+extremely unstable and small perturbations on the data could lead to large changes 
+in the principal components past 30.
+
+We pull the first three principal components for further analysis.
 
 ```{r eval=FALSE}
 metadata <- as.data.frame(colData(se))
