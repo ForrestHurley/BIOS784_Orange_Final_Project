@@ -56,6 +56,152 @@ The t-SNE projection of 9,055 single T cells from 14 patients, showing the forma
 
 ## GLM-PCA
 
+Besides the standard PCA method, we implemented the GLM-PCA (PCA for generalized linear models (GLMs)) method [cite]. To compare, the standard PCA minimizes the mean squared error (MSE) between the data and a low-rank representation (also called embedding), which is equivalent to minimizing the Euclidean distance between the embedding and the data. Essentially, the standard PCA is equivalent to maximizing the likelihood of a Gaussian model. In contrast, the GLM-PCA minimizes a generalization of the MSE: the deviance, and hence allows for a wide variety of likelihoods suitable for data types like count and binary data. The advantage of the GLM-PCA method over the standard PCA is that the GLM-PCA is more concordant to the data-generating mechanism. In other words, the analysis can be done using the raw data without any sequential normalization and transformation. 
+ 
+As in the analysis using the standard PCA, we applied GLM-PCA on the data restricted to genes with mean count greater than 1 (12402 genes). Since the data type is count, we implemented the GLM-PCA based on two different likelihoods: the negative binomial likelihood (to account for over-dispersion) and the Poisson likelihood, via the `glmpca` package. 
+
+```{r, eval=FALSE}
+library(dplyr)
+
+# load the data
+source("src/get_data.R")
+rm(d, info, zeros)
+
+count <- as.matrix(assay(se))
+count <- as.matrix(count)
+metadata <- as.data.frame(colData(se))
+colnames(count) <- metadata$UniqueCell_ID
+rownames(count) <- rowData(se)$geneID
+
+# function to get the tissue from sample type 
+metadata$Tissue <- sapply(metadata$sampleType, function(x){
+  if (x %in% c("NTC", "NTH", "NTR")) {
+    return("Adjacent Normal Lung Tissues")
+  } else if (x %in% c("PTC", "PTH", "PTR", "PTY")) {
+    return("Peripheral Blood")
+  } else{
+    return("Tumor")
+  }
+})
+```
+
+
+### Based on Negative Binomial Likelihood 
+
+```{r, eval=FALSE}
+library(glmpca)
+library(ggplot2)
+library(NatParksPalettes)
+library(gridExtra)
+
+# GLM-PCA based on negative binomial likelihood 
+res_pc30 <- glmpca(count, 30, fam = "nb")
+
+factors <- res_pc30$factors
+metadata["PC_1"] = factors[,1]
+metadata["PC_2"] = factors[,2]
+
+# color by sample type and tissue
+p1 = ggplot(aes(x=PC_1,y=PC_2,color=sampleType),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Sample Type") + 
+  scale_color_brewer(palette="Paired") + 
+  theme_bw()
+p2 = ggplot(aes(x=PC_1,y=PC_2,color=Tissue),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Tissue") +
+  scale_color_brewer(palette="Paired") + 
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_nb_sampletype.png")
+```
+
+
+```{r, eval=FALSE}
+# color by patient
+ggplot(aes(x=PC_1,y=PC_2,color=Patient),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Patient") +
+  theme_bw() 
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_nb_patient.png")
+```
+
+```{r, eval=FALSE}
+# color by major cluster
+ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Major Cluster") +
+  theme_bw()
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_nb_majorcluster.png")
+```
+
+
+### Based on Poisson Likelihood 
+
+```{r, eval=FALSE}
+# GLM-PCA based on Poisson likelihood 
+res2_pc30 <- glmpca(count, 30, fam = "poi")
+metadata2 = subset(metadata, select = c(UniqueCell_ID, Patient, majorCluster, sampleType, Tissue))
+factors2 <- res2_pc30$factors
+metadata2["PC_1"] = factors2[,1]
+metadata2["PC_2"] = factors2[,2]
+
+# color by sample type and tissue
+p1 = ggplot(aes(x=PC_1,y=PC_2,color=sampleType),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Sample Type") + 
+  scale_color_brewer(palette="Paired") + 
+  theme_bw()
+p2 = ggplot(aes(x=PC_1,y=PC_2,color=Tissue),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Tissue") +
+  scale_color_brewer(palette="Paired") + 
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_poi_sampletype.png")
+```
+
+
+```{r, eval=FALSE}
+# color by patient
+ggplot(aes(x=PC_1,y=PC_2,color=Patient),data=metadata2) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Patient") +
+  theme_bw() 
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_poi_patient.png")
+```
+
+
+```{r, eval=FALSE}
+# color by major cluster
+ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata) + 
+  geom_point(alpha=0.7) +
+  labs(subtitle = "Color by Major Cluster") +
+  theme_bw()
+```
+
+```{r, echo=FALSE}
+knitr::include_graphics("Figures/glmpca_poi_majorcluster.png")
+```
 
 
 ## Gaussian Mixture Modeling
