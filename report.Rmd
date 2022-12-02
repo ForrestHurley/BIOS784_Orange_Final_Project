@@ -174,12 +174,12 @@ metadata2["PC_1"] = factors2[,1]
 metadata2["PC_2"] = factors2[,2]
 
 # color by sample type and tissue
-p1 = ggplot(aes(x=PC_1,y=PC_2,color=sampleType),data=metadata) + 
+p1 = ggplot(aes(x=PC_1,y=PC_2,color=sampleType),data=metadata2) + 
   geom_point(alpha=0.7) +
   labs(subtitle = "Color by Sample Type") + 
   scale_color_brewer(palette="Paired") + 
   theme_bw()
-p2 = ggplot(aes(x=PC_1,y=PC_2,color=Tissue),data=metadata) + 
+p2 = ggplot(aes(x=PC_1,y=PC_2,color=Tissue),data=metadata2) + 
   geom_point(alpha=0.7) +
   labs(subtitle = "Color by Tissue") +
   scale_color_brewer(palette="Paired") + 
@@ -209,7 +209,7 @@ knitr::include_graphics("Figures/glmpca_poi_patient.png")
 
 ```{r, eval=FALSE}
 # color by major cluster
-ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata) + 
+ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata2) + 
   geom_point(alpha=0.7) +
   labs(subtitle = "Color by Major Cluster") +
   theme_bw()
