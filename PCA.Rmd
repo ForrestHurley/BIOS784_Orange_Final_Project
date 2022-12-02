@@ -56,7 +56,7 @@ axes show the first two PCs and the faceting shows the third PC. These
 principal components capture 4.3% of the total variance after the log 
 transform and scaling.
 
-```{r}
+```{r eval=FALSE}
 
 library(ggplot2)
 
