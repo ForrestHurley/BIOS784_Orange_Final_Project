@@ -10,7 +10,7 @@ link-citations: true
 
 Lung cancer is one of the most commonly diagnosed cancers and the leading cause of cancer death. For many years, the main treatments for lung cancer include surgery, chemotherapy, radiotherapy and targeted therapy. Non-small-cell lung cancer (NSCLC) is the leading cause of cancer-related mortality and accounts for ~85$\%$ of lung cancers. NSCLC tumors typically harbor extensive genomic alterations, with high mutation load linking to better response to checkpoint blockade although with exceptions. 
 
-The paper [@Guo2018] studied the complexity of tumor-infiltrating T cells in NSCLC, and performed deep single-cell RNA sequencing on T cells isolated from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell, enabling reliable detection of lowly expressed cytokines and transcription factors.
+The paper [-@Guo2018] studied the complexity of tumor-infiltrating T cells in NSCLC, and performed deep single-cell RNA sequencing on T cells isolated from tumor, adjacent normal tissues and peripheral blood for 14 treatment-naïve patients, including 11 adenocarcinomas and three squamous cell carcinomas. After confirming the existence of T cell infiltration in NSCLC tumors, they sorted various T cell subtypes based on cell surface markers CD3/CD4/CD8/CD25 by fluorescence-activated cell sorting (FACS). A total of 12,346 cells were sequenced at an average depth of 1.04 million uniquely-mapped read pairs per cell, enabling reliable detection of lowly expressed cytokines and transcription factors.
 
     
 ![Data collection](Figures/lab.PNG)
@@ -60,11 +60,11 @@ The t-SNE projection of 9,055 single T cells from 14 patients, showing the forma
 
 ## GLM-PCA
 
-Besides the standard PCA method, we implemented the GLM-PCA (PCA for generalized linear models) method [@Townes2019]. To compare, the standard PCA minimizes the mean squared error (MSE) between the data and a low-rank representation (also called embedding), which is equivalent to minimizing the Euclidean distance between the embedding and the data. Essentially, the standard PCA is equivalent to maximizing the likelihood of a Gaussian model. In contrast, the GLM-PCA minimizes a generalization of the MSE: the deviance, and hence allows for a wide variety of likelihoods suitable for data types like count and binary data. The advantage of the GLM-PCA method over the standard PCA is that the GLM-PCA is more concordant to the data-generating mechanism. In other words, the analysis can be done using the raw data without any sequential normalization and transformation. 
+Besides the standard PCA method, we implemented the GLM-PCA (PCA for generalized linear models) method [-@Townes2019]. To compare, the standard PCA minimizes the mean squared error (MSE) between the data and a low-rank representation (also called embedding), which is equivalent to minimizing the Euclidean distance between the embedding and the data. Essentially, the standard PCA is equivalent to maximizing the likelihood of a Gaussian model. In contrast, the GLM-PCA minimizes a generalization of the MSE: the deviance, and hence allows for a wide variety of likelihoods suitable for data types like count and binary data. The advantage of the GLM-PCA method over the standard PCA is that the GLM-PCA is more concordant to the data-generating mechanism. In other words, the analysis can be done using the raw data without any sequential normalization and transformation. 
  
 We filtered out the genes with mean count less than or equal to 1 (12402 genes left after filtering) and then applied the GLM-PCA method. Since the data type is count, we implemented the GLM-PCA based on two different likelihoods: the negative binomial likelihood (to account for over-dispersion) and the Poisson likelihood, via the `glmpca` package. As in the analysis with the standard PCA, we chose the number of latent dimensions to be 30. 
 
-For each model, we plotted the first two latent dimensions colored by sample types, tissues, patients, and the major clusters identified in the original data paper [@Guo2018].
+For each model, we plotted the first two latent dimensions colored by sample types, tissues, patients, and the major clusters identified in the original data paper [-@Guo2018].
 
 ```{r, eval=FALSE}
 library(dplyr)
@@ -146,7 +146,7 @@ knitr::include_graphics("Figures/glmpca_nb_patient.png")
 ```
 
 
-In addition, we colored the plot (shown below) by the major clusters found in the original data paper [@Guo2018]. Unlike in the original paper (the t-SNE plot in the Background section), the clusters in the plot are not well separated, but it was not surprising since here we only applied a naive filter: restricted the data to the genes with mean count greater than 1. It is possible that many genes that do not contribute to clustering (T cell subtype identification) still remain in the data. 
+In addition, we colored the plot (shown below) by the major clusters found in the original data paper [-@Guo2018]. Unlike in the original paper (the t-SNE plot in the Background section), the clusters in the plot are not well separated, but it was not surprising since here we only applied a naive filter: restricted the data to the genes with mean count greater than 1. It is possible that many genes that do not contribute to clustering (T cell subtype identification) still remain in the data. 
 
 ```{r, eval=FALSE}
 # color by major cluster
