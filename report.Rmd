@@ -1,6 +1,8 @@
 ---
 title: "Model Based Clustering of Lung Carcinoma Single T-Cells"
 output: html_document
+bibliography: refs.bib
+link-citations: true
 ---
 
 ## Background
@@ -55,11 +57,14 @@ The t-SNE projection of 9,055 single T cells from 14 patients, showing the forma
 ```{r child = "PCA.Rmd"}
 ```
 
+
 ## GLM-PCA
 
-Besides the standard PCA method, we implemented the GLM-PCA (PCA for generalized linear models (GLMs)) method [cite]. To compare, the standard PCA minimizes the mean squared error (MSE) between the data and a low-rank representation (also called embedding), which is equivalent to minimizing the Euclidean distance between the embedding and the data. Essentially, the standard PCA is equivalent to maximizing the likelihood of a Gaussian model. In contrast, the GLM-PCA minimizes a generalization of the MSE: the deviance, and hence allows for a wide variety of likelihoods suitable for data types like count and binary data. The advantage of the GLM-PCA method over the standard PCA is that the GLM-PCA is more concordant to the data-generating mechanism. In other words, the analysis can be done using the raw data without any sequential normalization and transformation. 
+Besides the standard PCA method, we implemented the GLM-PCA (PCA for generalized linear models) method [@Townes2019]. To compare, the standard PCA minimizes the mean squared error (MSE) between the data and a low-rank representation (also called embedding), which is equivalent to minimizing the Euclidean distance between the embedding and the data. Essentially, the standard PCA is equivalent to maximizing the likelihood of a Gaussian model. In contrast, the GLM-PCA minimizes a generalization of the MSE: the deviance, and hence allows for a wide variety of likelihoods suitable for data types like count and binary data. The advantage of the GLM-PCA method over the standard PCA is that the GLM-PCA is more concordant to the data-generating mechanism. In other words, the analysis can be done using the raw data without any sequential normalization and transformation. 
  
-As in the analysis using the standard PCA, we applied GLM-PCA on the data restricted to genes with mean count greater than 1 (12402 genes). Since the data type is count, we implemented the GLM-PCA based on two different likelihoods: the negative binomial likelihood (to account for over-dispersion) and the Poisson likelihood, via the `glmpca` package. 
+We filtered out the genes with mean count less than or equal to 1 (12402 genes left after filtering) and then applied the GLM-PCA method. Since the data type is count, we implemented the GLM-PCA based on two different likelihoods: the negative binomial likelihood (to account for over-dispersion) and the Poisson likelihood, via the `glmpca` package. As in the analysis with the standard PCA, we chose the number of latent dimensions to be 30. 
+
+For each model, we plotted the first two latent dimensions colored by sample types, tissues, patients, and the major clusters identified in the original data paper [@Guo2018].
 
 ```{r, eval=FALSE}
 library(dplyr)
@@ -88,6 +93,8 @@ metadata$Tissue <- sapply(metadata$sampleType, function(x){
 
 
 ### Based on Negative Binomial Likelihood 
+
+The following plots are based on the negative binomial model.
 
 ```{r, eval=FALSE}
 library(glmpca)
@@ -122,6 +129,9 @@ grid.arrange(p1, p2, ncol = 2)
 knitr::include_graphics("Figures/glmpca_nb_sampletype.png")
 ```
 
+From the plots above, we can see that there are no distinct patterns in the plot colored by sample type. In the plot colored by tissue type, the tumor samples seem to be slightly different from the other two types of samples, but the separations among different clusters are not obvious.
+
+The plot colored by patient (shown below) also indicates that the samples from different patients can not be well separated. 
 
 ```{r, eval=FALSE}
 # color by patient
@@ -135,6 +145,8 @@ ggplot(aes(x=PC_1,y=PC_2,color=Patient),data=metadata) +
 knitr::include_graphics("Figures/glmpca_nb_patient.png")
 ```
 
+
+In addition, we colored the plot (shown below) by the major clusters found in the original data paper [@Guo2018]. Unlike in the original paper (the t-SNE plot in the Background section), the clusters in the plot are not well separated, but it was not surprising since here we only applied a naive filter: restricted the data to the genes with mean count greater than 1. It is possible that many genes that do not contribute to clustering (T cell subtype identification) still remain in the data. 
 
 ```{r, eval=FALSE}
 # color by major cluster
@@ -150,6 +162,8 @@ knitr::include_graphics("Figures/glmpca_nb_majorcluster.png")
 
 
 ### Based on Poisson Likelihood 
+
+The following plots are based on the Poisson model. We can obtain similar conclusions as from the plots based on the negative binomial model. 
 
 ```{r, eval=FALSE}
 # GLM-PCA based on Poisson likelihood 
@@ -210,3 +224,6 @@ knitr::include_graphics("Figures/glmpca_poi_majorcluster.png")
 
 
 ## Conclusions
+
+## References
+
