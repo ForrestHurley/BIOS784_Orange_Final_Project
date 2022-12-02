@@ -52,7 +52,8 @@ The t-SNE projection of 9,055 single T cells from 14 patients, showing the forma
 
 ## PCA
 
-
+```{r child = "PCA.Rmd"}
+```
 
 ## GLM-PCA
 
