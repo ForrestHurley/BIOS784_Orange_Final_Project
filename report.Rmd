@@ -130,9 +130,10 @@ ggplot(aes(x=PC_1,y=PC_2,color=Patient),data=metadata) +
   theme_bw() 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = '60%'}
 knitr::include_graphics("Figures/glmpca_nb_patient.png")
 ```
+
 
 ```{r, eval=FALSE}
 # color by major cluster
@@ -142,7 +143,7 @@ ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata) +
   theme_bw()
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = '80%'}
 knitr::include_graphics("Figures/glmpca_nb_majorcluster.png")
 ```
 
@@ -186,7 +187,7 @@ ggplot(aes(x=PC_1,y=PC_2,color=Patient),data=metadata2) +
   theme_bw() 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = '60%'}
 knitr::include_graphics("Figures/glmpca_poi_patient.png")
 ```
 
@@ -199,7 +200,7 @@ ggplot(aes(x=PC_1,y=PC_2,color=majorCluster),data=metadata) +
   theme_bw()
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.width = '80%'}
 knitr::include_graphics("Figures/glmpca_poi_majorcluster.png")
 ```
 
